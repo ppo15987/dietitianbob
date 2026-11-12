@@ -63,3 +63,33 @@ body{isolation:isolate}
 @media(prefers-reduced-motion:reduce){.glass-tilt{transform:none!important}.glass-panel::after{display:none}}
 @media(prefers-reduced-transparency:reduce){.glass-panel,.sphere-panel.glass-panel{background:var(--surface);-webkit-backdrop-filter:none;backdrop-filter:none}.glass-panel::after{display:none}}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.glass-panel,.sphere-panel.glass-panel{background:var(--surface)}}
+
+/* A single green light travels around the draw button's pill edge. */
+#draw{
+ position:relative;isolation:isolate;overflow:hidden;border:0;border-radius:999px;
+ min-height:54px;padding:14px 22px;background:rgba(64,126,78,.24);color:#245b36;
+ box-shadow:0 4px 16px rgba(39,115,70,.10),inset 0 0 0 1px rgba(64,126,78,.15);
+}
+#draw::before{
+ content:"";position:absolute;pointer-events:none;z-index:0;left:50%;top:50%;
+ width:220%;aspect-ratio:1;
+ background:conic-gradient(from 0deg,transparent 0deg 270deg,rgba(85,162,100,.18) 300deg,#3b9254 342deg,#b6e89b 359deg,transparent 360deg);
+ animation:draw-border-orbit 3s linear infinite;
+}
+#draw::after{
+ content:"";position:absolute;pointer-events:none;z-index:1;inset:2px;border-radius:inherit;
+ background:#f6fbf4;box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
+}
+#draw>span{position:relative;z-index:2}
+#draw:not(:disabled):hover{filter:none;box-shadow:0 6px 22px rgba(39,115,70,.18)}
+#draw:not(:disabled):hover::after{background:#edf7e9}
+#draw:disabled::before{animation:none;opacity:.25}
+.motion-paused #draw::before{animation-play-state:paused}
+@keyframes draw-border-orbit{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+@media(prefers-color-scheme:dark){
+ #draw{color:#e7f6e2;background:rgba(153,209,157,.23)}
+ #draw::after{background:#1b3022;box-shadow:inset 0 1px 0 rgba(220,255,220,.08)}
+ #draw:not(:disabled):hover::after{background:#24412e}
+ #draw::before{background:conic-gradient(from 0deg,transparent 0deg 270deg,rgba(119,196,130,.16) 300deg,#77c482 342deg,#d3f5bd 359deg,transparent 360deg)}
+}
+@media(prefers-reduced-motion:reduce){#draw::before{animation:none!important;transform:translate(-50%,-50%) rotate(35deg)}}

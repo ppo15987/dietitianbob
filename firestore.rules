@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    match /admins/{uid} {
+      allow get: if request.auth != null && request.auth.uid == uid;
+      allow list, write: if false;
+    }
+    match /events/main {
+      allow read: if isAdmin();
+      allow create, update: if isAdmin()
+        && request.resource.data.keys().hasOnly(['title','people','prizes','winners','revision'])
+        && request.resource.data.title is string
+        && request.resource.data.title.size() <= 50
+        && request.resource.data.people is list && request.resource.data.people.size() <= 1000
+        && request.resource.data.prizes is list && request.resource.data.prizes.size() <= 100
+        && request.resource.data.winners is list && request.resource.data.winners.size() <= 1000
+        && request.resource.data.revision is int;
+      allow delete: if false;
+    }
+    match /{document=**} { allow read, write: if false; }
+  }
+}

@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {emptyState,parseNames,available,remaining,draw,randomIndex,csv} from '../public/model.js';
+const fixture=()=>({...emptyState(),people:Array.from({length:100},(_,i)=>({id:String(i),name:'參與者'+i})),prizes:[{id:'p',name:'獎項',quantity:60},{id:'q',name:'獎項二',quantity:40}]});
+test('CRLF / empty rows / exact duplicates / same name with IDs',()=>{assert.deepEqual(parseNames('Tony\r\n\nTony\n001 王明\n002 王明'),{names:['Tony','001 王明','002 王明'],duplicates:1});assert.throws(()=>parseNames('x'.repeat(61)));assert.throws(()=>parseNames(Array(1001).fill('x').join('\n')));});
+test('draw all people across prizes without duplicates or overdraw',()=>{let s=fixture();for(let i=0;i<6;i++)s=draw(s,'p',10,'p'+i);for(let i=0;i<4;i++)s=draw(s,'q',10,'q'+i);assert.equal(s.winners.length,100);assert.equal(new Set(s.winners.map(w=>w.personId)).size,100);assert.equal(available(s).length,0);assert.equal(remaining(s,'p'),0);assert.throws(()=>draw(s,'p',1,'overflow'));});
+test('invalid quantities, missing prize and insufficient participants do not mutate',()=>{const s=fixture(),before=JSON.stringify(s);for(const n of [0,-1,1.5,NaN,51])assert.throws(()=>draw(s,'p',n,'bad'));assert.throws(()=>draw(s,'missing',1,'bad'));assert.throws(()=>draw({...s,people:[]},'p',1,'bad'));assert.equal(JSON.stringify(s),before);});
+test('idempotent batch request does not draw twice',()=>{const s=draw(fixture(),'p',3,'same');assert.equal(draw(s,'p',3,'same'),s);});
+test('rejection sampling rejects biased tail',()=>{let calls=0;const rng={getRandomValues(a){a[0]=calls++===0?4294967295:8;}};assert.equal(randomIndex(10,rng),8);assert.equal(calls,2);});
+test('CSV quotes values and neutralizes spreadsheet formulas',()=>{const s=fixture();s.winners=[{name:'=1+1',prize:'獎項,"A"',time:'2026'}];const out=csv(s);assert.ok(out.includes('"\'=1+1"'));assert.ok(out.includes('"獎項,""A"""'));assert.ok(out.startsWith('\uFEFF'));});

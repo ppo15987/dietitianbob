@@ -72,18 +72,20 @@ body{isolation:isolate}
 }
 #draw::before{
  content:"";position:absolute;pointer-events:none;z-index:0;left:50%;top:50%;
- width:220%;aspect-ratio:1;
+ width:220%;aspect-ratio:1;transform:translate(-50%,-50%);
  background:conic-gradient(from 0deg,transparent 0deg 270deg,rgba(85,162,100,.18) 300deg,#3b9254 342deg,#b6e89b 359deg,transparent 360deg);
  animation:draw-border-orbit 3s linear infinite;
 }
 #draw::after{
- content:"";position:absolute;pointer-events:none;z-index:1;inset:2px;border-radius:inherit;
+ content:"";position:absolute;pointer-events:none;z-index:1;inset:3px;border-radius:inherit;
  background:#f6fbf4;box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
 }
 #draw>span{position:relative;z-index:2}
 #draw:not(:disabled):hover{filter:none;box-shadow:0 6px 22px rgba(39,115,70,.18)}
 #draw:not(:disabled):hover::after{background:#edf7e9}
-#draw:disabled::before{animation:none;opacity:.25}
+#draw:disabled{opacity:1;cursor:not-allowed}
+#draw:disabled>span{opacity:.55}
+#draw:disabled::before{opacity:.72;animation-duration:4s}
 .motion-paused #draw::before{animation-play-state:paused}
 @keyframes draw-border-orbit{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
 @media(prefers-color-scheme:dark){
@@ -93,3 +95,14 @@ body{isolation:isolate}
  #draw::before{background:conic-gradient(from 0deg,transparent 0deg 270deg,rgba(119,196,130,.16) 300deg,#77c482 342deg,#d3f5bd 359deg,transparent 360deg)}
 }
 @media(prefers-reduced-motion:reduce){#draw::before{animation:none!important;transform:translate(-50%,-50%) rotate(35deg)}}
+
+/* Stronger light trail with a visible, wider border in both appearances. */
+#draw{background:#8ac39a;box-shadow:0 0 14px rgba(93,196,116,.2),0 5px 18px rgba(24,70,38,.12)}
+#draw::before{background:conic-gradient(from 0deg,transparent 0deg 190deg,rgba(56,160,82,.3) 240deg,#37b45d 290deg,#baf589 330deg,#f2ffe4 352deg,#52cb78 359deg,transparent 360deg)}
+#draw:disabled{box-shadow:0 0 12px rgba(93,196,116,.12)}
+#draw:not(:disabled):hover{box-shadow:0 0 22px rgba(98,212,120,.35),0 6px 22px rgba(39,115,70,.18)}
+@media(prefers-color-scheme:dark){
+ #draw{background:#42744c}
+ #draw::after{background:#142b1d}
+ #draw::before{background:conic-gradient(from 0deg,transparent 0deg 190deg,rgba(93,208,121,.3) 240deg,#4ce57c 290deg,#bdff8b 330deg,#f5ffe9 352deg,#62ed96 359deg,transparent 360deg)}
+}

@@ -8,3 +8,5 @@
 
 /* Keep the brand within the original toolbar footprint. */
 .brand-logo{display:block;width:36px;height:36px;max-width:36px;object-fit:contain;flex:0 0 36px}.brand-divider{height:22px;width:1px;background:var(--line);margin:0 4px}.brand-label{font-size:15px;font-weight:550;letter-spacing:.04em}.login-logo{display:block;width:48px;height:48px;max-width:48px;object-fit:contain;margin:0 0 22px}@media(prefers-color-scheme:dark){.brand-logo,.login-logo{background:#f5f5f7;border-radius:6px}}@media(max-width:760px){.brand{gap:8px}.brand-label{font-size:14px}.toolbar>#account{padding:10px 12px}}
+
+.google-login{display:block;width:100%;margin-top:24px;font-weight:550;border:1px solid var(--line);background:var(--surface);color:var(--text)}.login-separator{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:12px;margin:20px 0 0}.login-separator::before,.login-separator::after{content:"";height:1px;background:var(--line);flex:1}
